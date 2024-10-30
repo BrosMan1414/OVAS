@@ -10,18 +10,24 @@ int main(){
 
     int gestion[cantidad][3];
     int roundrobin[cantidad][3];
-    int resultado[cantidad][2] = {0};//Tiempo en que inicio y termino de ejecutarse el proceso
+    int resultado[cantidad][2];//Tiempo en que inicio y termino de ejecutarse el proceso
+
+    // Inicializacion de resultado
+    for (int i = 0; i < cantidad; i++) {
+        resultado[i][0] = 0; // Inicializar tiempo de inicio
+        resultado[i][1] = 0; // Inicializar tiempo de fin
+    }
 
     for(int i=0; i < cantidad; i++){
-        printf("Define la prioridad:\n");
+        printf("Define la prioridad del proceso %d:\n", i);
         scanf("%d", &gestion[i][0]); // Prioridad
         roundrobin[i][0] = gestion[i][0];
 
-        printf("Define el tiempo de llegada:\n");
+        printf("Define el tiempo de llegada del proceso %d:\n", i);
         scanf("%d", &gestion[i][1]); // Tiempo de llegada o entrada
         roundrobin[i][1] = gestion[i][1];
 
-        printf("Define el tiempo de duracion:\n");
+        printf("Define el tiempo de duracion del proceso %d:\n", i);
         scanf("%d", &gestion[i][2]); // Tiempo de duracion o trabajo
         roundrobin[i][2] = gestion[i][2];
 
