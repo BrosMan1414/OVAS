@@ -1,13 +1,12 @@
-## **Gestion de procesos Round-Robin**
+## **Gestión de Procesos con Round-Robin usando JNI**
 
+### *Creación paso a paso de Bibliotecas Dinámicas con JNI*
 
-### *Creacion paso a paso de Bibliotecas Dinamicas con JNI*
+### Código en Java para la Integración JNI
 
-### Codigo en Java para la integracion JNI:
+Primero, crea la carpeta principal del proyecto, por ejemplo: `mkdir ova-libroundrobin-jni`. A continuación, crea una subcarpeta para el código en Java: `mkdir libroundrobin`. Dentro de esta subcarpeta, desarrolla el archivo `.java` con el comando `nano GestorProcesos.java`. El código en Java debería ser el siguiente:
 
-Primero que todo se creara la carpeta principal del proyecto, ejemplo `mkdir ova-libroundrobin-jni`. Luego se crea una subcarpeta para el desarrollo del codigo en java, ejemplo `mkdir libroundrobin`. Se crea el archivo `.java` y se desarrolla el codigo, ejemplo `nano GestorProcesos.java`. Codigo de java:
-
-```
+```java
 package libroundrobin;
 
 public class GestorProcesos {
@@ -18,16 +17,13 @@ public class GestorProcesos {
 }
 ```
 
+### Código en C
 
+Después de finalizar el código en Java, genera el archivo `.h` utilizando: `javac GestorProcesos.java -h .`. Para verificar el contenido del archivo compilado, puedes usar el comando: `file GestorProcesos.class`.
 
-### Codigo en C:
+Duplica el archivo de encabezado de la siguiente manera: `cp libroundrobin_GestorProcesos.h libroundrobin_GestorProcesos.c`, y luego edita el archivo `.c` usando `nano libroundrobin_GestorProcesos.c`. El código en C debería ser el siguiente:
 
-Luego de terminar nuestro codigo en java generaremos un archivo `.h` de esta forma `javac GestorProcesos.java -h .`. Para revisar lo que tiene el archivo compilado se puede usar: `file GestorProcesos.class`.
-
-Ahora duplicaremos el archivo de cabezera, asi: `cp libroundrobin_GestorProcesos.h libroundrobin_GestorProcesos.c` y luego editamos el archivo `.c`, `nano libroundrobin_GestorProcesos.c`. Nuestro codigo desarrollado en c:
-
-
-```
+```c
 #include <jni.h>
 #include <stdio.h>
 #include "libroundrobin_GestorProcesos.h"
@@ -85,23 +81,19 @@ JNIEXPORT jobjectArray JNICALL Java_libroundrobin_GestorProcesos_calculateProces
 }
 ```
 
+### Generación de la Biblioteca
 
-
-### Generar biblioteca:
-
-El comando para crear el compilador de la biblioteca `gcc -c -fPIE libroundrobin_GestorProcesos.c -I/usr/lib/jvm/java-1.17.0-openjdk-amd64/include/ -I/usr/lib/jvm/java-1.17.0-openjdk-amd64/include/linux/ -o libroundrobin.o`. Luego generaremos la biblioteca con el comando: `gcc -shared libroundrobin.o -o libroundrobin.so`. Para terminar de instalar la biblioteca se tienen que engresar esots otros tres comandos:
+Para compilar la biblioteca, utiliza el siguiente comando: `gcc -c -fPIE libroundrobin_GestorProcesos.c -I/usr/lib/jvm/java-1.17.0-openjdk-amd64/include/ -I/usr/lib/jvm/java-1.17.0-openjdk-amd64/include/linux/ -o libroundrobin.o`. Luego, genera la biblioteca compartida ejecutando: `gcc -shared libroundrobin.o -o libroundrobin.so`. Para finalizar la instalación de la biblioteca, ejecuta estos comandos:
 
 - `sudo cp libroundrobin.so /usr/lib`
 - `sudo cp libroundrobin_GestorProcesos.h /usr/include`
 - `sudo ldconfig`
 
+### Envío de Datos y Salida de Resultados en Java
 
+Regresa a la carpeta principal `ova-libroundrobin-jni`, crea una nueva subcarpeta `mkdir gestorJNI`, y dentro de `gestorJNI`, crea el archivo `nano JavaJNIGestorApp.java` con el siguiente código:
 
-### Envio de los datos y salida de resultados en java:
-
-Simplemente volvemos a nuestra carpeta principal `ova-libroundrobin-jni` y creamos una nueva carpeta `mkdir gestorJNI`, ya dentro de `gestorJNI` creamos el archivo `nano JavaJNIGestorApp.java`, aqui desorrallaremos nuestro codigo:
-
-```
+```java
 package gestorJNI;
 
 import libroundrobin.GestorProcesos;
@@ -116,7 +108,6 @@ public class JavaJNIGestorApp {
     public static void main(String[] args) {
         new JavaJNIGestorApp();
     }
-
 
     public JavaJNIGestorApp() {
         GestorProcesos scheduler = new GestorProcesos();
@@ -138,13 +129,14 @@ public class JavaJNIGestorApp {
 }
 ```
 
-Al terminar el desarrollo del codigo solo quedaria volver a la carpeta principal y compilar el ultimo codigo realizado: 
+Al terminar el desarrollo del código, compílalo desde la carpeta principal con:
 
-- `javac gestorJNI/JavaJNIGestorApp.java` 
+- `javac gestorJNI/JavaJNIGestorApp.java`
 - `java gestorJNI.JavaJNIGestorApp`
 
+### Resultado Final
 
-Mi resultado final:
+Al ejecutar el programa, obtendrás una salida similar a:
 
 ```
 El proceso 0 inició su ejecución en 1 y terminó de ejecutarse en 4
